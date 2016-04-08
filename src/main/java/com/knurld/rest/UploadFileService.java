@@ -1,6 +1,7 @@
 package com.knurld.rest;
 
 import java.io.InputStream;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -19,7 +20,10 @@ public class UploadFileService {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadFile(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("fileName") String fileName) {
+		if (fileName == null || fileName.isEmpty()) {
+			fileName = UUID.randomUUID().toString() + ".wav";
 
+		}
 		String output = UploadAPI.uploadFile(uploadedInputStream, fileName);
 		if (output != null) {
 			return Response.status(200).entity(output).header("Access-Control-Allow-Origin", "*")
