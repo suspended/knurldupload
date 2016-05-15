@@ -54,7 +54,7 @@ public class Twilio {
 	@POST
 	@Path("/handlekey")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response handlekey(@FormDataParam("Digits") String digits) {
+	public Response handlekey(@FormParam("Digits") String digits) {
 		TwiMLResponse twiml = new TwiMLResponse();
 		
 		System.out.println("digits:" + digits);
@@ -95,7 +95,7 @@ public class Twilio {
 	@POST
 	@Path("/handleRecording")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response handleRecording(@FormDataParam("RecordingUrl") String recordingUrl) {
+	public Response handleRecording(@FormParam("RecordingUrl") String recordingUrl) {
 		System.out.println("RecordingUrl:" + recordingUrl);
 		TwiMLResponse twiml = new TwiMLResponse();
 		if (recordingUrl != null) {
