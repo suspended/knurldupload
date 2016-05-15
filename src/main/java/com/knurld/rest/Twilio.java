@@ -133,7 +133,7 @@ public class Twilio {
 	public Response getKey(@PathParam("key") String key) {
 		JSONObject success = new JSONObject();
 		success.put("url", urls.get(key));
-		return Response.status(200).entity(success).header("Access-Control-Allow-Origin", "*")
+		return Response.status(200).entity(success.toJSONString()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 
 	}
