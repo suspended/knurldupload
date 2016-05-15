@@ -138,7 +138,7 @@ public class Twilio {
 
 	}
 
-	@GET
+	@POST
 	@Path("/recordForKey")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response recordForKey(@FormParam("key") String key) {
