@@ -131,9 +131,9 @@ public class Twilio {
 	}
 
 	@POST
-	@Path("/recordForKey")
+	@Path("/recordForKey/{key}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response recordForKey(@FormParam("key") String key) {
+	public Response recordForKey(@PathParam("key") String key) {
 		System.out.println("Key:"+key);
 		urls.put(key, "");
 		return Response.status(200).header("Access-Control-Allow-Origin", "*")
