@@ -40,7 +40,7 @@ public class Twilio {
 
 		Gather gather = new Gather();
 		gather.setAction("https://knurldupload.herokuapp.com/rest/twilio/handlekey");
-		gather.setNumDigits(1);
+		gather.setNumDigits(4);
 		gather.setMethod("POST");
 		Say sayInGather = new Say("To use api please enter number fron screen");
 		try {
