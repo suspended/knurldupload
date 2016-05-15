@@ -46,7 +46,7 @@ public class Twilio {
 			e.printStackTrace();
 		}
 
-		return Response.status(200).entity(twiml).header("Access-Control-Allow-Origin", "*")
+		return Response.status(200).entity(twiml.toXML()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 
 	}
@@ -87,7 +87,7 @@ public class Twilio {
 			}
 		}
 
-		return Response.status(200).entity(twiml).header("Access-Control-Allow-Origin", "*")
+		return Response.status(200).entity(twiml.toXML()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 
 	}
@@ -107,7 +107,7 @@ public class Twilio {
 				e.printStackTrace();
 			}
 		}
-		return Response.status(200).entity(twiml).header("Access-Control-Allow-Origin", "*")
+		return Response.status(200).entity(twiml.toXML()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 
 	}
