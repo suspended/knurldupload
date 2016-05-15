@@ -1,14 +1,18 @@
 package com.knurld.rest;
 
+import java.util.HashMap;
+
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.sun.jersey.multipart.FormDataParam;
-import com.twilio.sdk.verbs.Dial;
+import org.json.simple.JSONObject;
+
 import com.twilio.sdk.verbs.Gather;
 import com.twilio.sdk.verbs.Play;
 import com.twilio.sdk.verbs.Record;
@@ -19,6 +23,9 @@ import com.twilio.sdk.verbs.TwiMLResponse;
 @Path("/twilio")
 public class Twilio {
 	// incomingCall
+
+	public static HashMap<String, String> urls = new HashMap<String, String>();
+	public static HashMap<String, String> callSidMap = new HashMap<String, String>();
 
 	@POST
 	@Path("/incomingCall")
@@ -35,8 +42,7 @@ public class Twilio {
 		gather.setAction("https://knurldupload.herokuapp.com/rest/twilio/handlekey");
 		gather.setNumDigits(1);
 		gather.setMethod("POST");
-		Say sayInGather = new Say("To speak to a real monkey, press 1. " + "Press 2 to record your own monkey howl. "
-				+ "Press any other key to start over.");
+		Say sayInGather = new Say("To use api please enter number fron screen");
 		try {
 			gather.append(sayInGather);
 			twiml.append(say);
@@ -45,7 +51,6 @@ public class Twilio {
 		} catch (TwiMLException e) {
 			e.printStackTrace();
 		}
-
 		return Response.status(200).entity(twiml.toXML()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 
@@ -54,24 +59,23 @@ public class Twilio {
 	@POST
 	@Path("/handlekey")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response handlekey(@FormParam("Digits") String digits) {
+	public Response handlekey(@FormParam("Digits") String digits, @FormParam("CallSid") String callId) {
 		TwiMLResponse twiml = new TwiMLResponse();
-		
+
 		System.out.println("digits:" + digits);
 
-		if (digits != null && digits.equals("1")) {
+		if (digits != null && !urls.containsKey(digits)) {
 			// Connect 310 555 1212 to the incoming caller.
-			Dial dial = new Dial("+14085148375");
-
+			callSidMap.put(callId, digits);
 			// If the above dial failed, say an error message.
-			Say say = new Say("The call failed, or the remote party hung up. Goodbye.");
+			Say say = new Say("Please register as Knurld developer");
 			try {
-				twiml.append(dial);
+				// twiml.append(dial);
 				twiml.append(say);
 			} catch (TwiMLException e) {
 				e.printStackTrace();
 			}
-		} else if (digits != null && digits.equals("2")) {
+		} else if (digits != null && urls.containsKey(digits)) {
 			Say pleaseLeaveMessage = new Say("Record your monkey howl after the tone.");
 			// Record the caller's voice.
 			Record record = new Record();
@@ -85,6 +89,14 @@ public class Twilio {
 			} catch (TwiMLException e) {
 				e.printStackTrace();
 			}
+		} else {
+			Say say = new Say("Please register as Knurld developer");
+			try {
+				// twiml.append(dial);
+				twiml.append(say);
+			} catch (TwiMLException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return Response.status(200).entity(twiml.toXML()).header("Access-Control-Allow-Origin", "*")
@@ -95,12 +107,14 @@ public class Twilio {
 	@POST
 	@Path("/handleRecording")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response handleRecording(@FormParam("RecordingUrl") String recordingUrl) {
+	public Response handleRecording(@FormParam("RecordingUrl") String recordingUrl,
+			@FormParam("CallSid") String callId) {
 		System.out.println("RecordingUrl:" + recordingUrl);
+		urls.put(callSidMap.get(callId), recordingUrl);
 		TwiMLResponse twiml = new TwiMLResponse();
 		if (recordingUrl != null) {
 			try {
-				twiml.append(new Say("Thanks for howling... take a listen to what you howled."));
+				twiml.append(new Say("Thanks for using Knurld... take a listen to what you howled."));
 				twiml.append(new Play(recordingUrl));
 				twiml.append(new Say("Goodbye"));
 			} catch (TwiMLException e) {
@@ -111,4 +125,27 @@ public class Twilio {
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 
 	}
+
+	@SuppressWarnings("unchecked")
+	@GET
+	@Path("/getKey/{key}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getKey(@PathParam("key") String key) {
+		JSONObject success = new JSONObject();
+		success.put("url", urls.get(key));
+		return Response.status(200).entity(success).header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
+
+	}
+
+	@GET
+	@Path("/recordForKey")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response recordForKey(@FormParam("key") String key) {
+		urls.put(key, null);
+		return Response.status(200).header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
+
+	}
+
 }
