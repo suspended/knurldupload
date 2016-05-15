@@ -36,17 +36,18 @@ public class Twilio {
 		Say say = new Say("Hi There, you calling Knurld!");
 
 		// Play an MP3 for incoming callers.
-		Play play = new Play("http://demo.twilio.com/hellomonkey/monkey.mp3");
+		// Play play = new
+		// Play("http://demo.twilio.com/hellomonkey/monkey.mp3");
 
 		Gather gather = new Gather();
 		gather.setAction("https://knurldupload.herokuapp.com/rest/twilio/handlekey");
 		gather.setNumDigits(4);
 		gather.setMethod("POST");
-		Say sayInGather = new Say("To use api please enter number fron screen");
+		Say sayInGather = new Say("To use api please enter key fron the screen");
 		try {
 			gather.append(sayInGather);
 			twiml.append(say);
-			twiml.append(play);
+			// twiml.append(play);
 			twiml.append(gather);
 		} catch (TwiMLException e) {
 			e.printStackTrace();
@@ -61,10 +62,11 @@ public class Twilio {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response handlekey(@FormParam("Digits") String digits, @FormParam("CallSid") String callId) {
 		TwiMLResponse twiml = new TwiMLResponse();
-
 		System.out.println("digits:" + digits);
+		System.out.println("Keys for urls:" + urls.keySet());
+		digits = digits.toString();
 
-		if (digits != null && urls.containsKey(digits)) {
+		if (urls.containsKey(digits)) {
 			Say pleaseLeaveMessage = new Say("Record your monkey howl after the tone.");
 			// Record the caller's voice.
 			callSidMap.put(callId, digits);
