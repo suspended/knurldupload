@@ -134,7 +134,8 @@ public class Twilio {
 	@Path("/recordForKey")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response recordForKey(@FormParam("key") String key) {
-		urls.put(key, null);
+		System.out.println("Key:"+key);
+		urls.put(key, "");
 		return Response.status(200).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 
