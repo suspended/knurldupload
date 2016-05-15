@@ -64,20 +64,10 @@ public class Twilio {
 
 		System.out.println("digits:" + digits);
 
-		if (digits != null && !urls.containsKey(digits)) {
-			// Connect 310 555 1212 to the incoming caller.
-			callSidMap.put(callId, digits);
-			// If the above dial failed, say an error message.
-			Say say = new Say("Please register as Knurld developer");
-			try {
-				// twiml.append(dial);
-				twiml.append(say);
-			} catch (TwiMLException e) {
-				e.printStackTrace();
-			}
-		} else if (digits != null && urls.containsKey(digits)) {
+		if (digits != null && urls.containsKey(digits)) {
 			Say pleaseLeaveMessage = new Say("Record your monkey howl after the tone.");
 			// Record the caller's voice.
+			callSidMap.put(callId, digits);
 			Record record = new Record();
 			record.setMaxLength(30);
 			// You may need to change this to point to the location of your
