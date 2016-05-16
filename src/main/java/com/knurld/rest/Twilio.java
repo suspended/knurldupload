@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.knurld.vad.WordDetection;
@@ -157,7 +158,20 @@ public class Twilio {
 			System.out.println("File path is :" + file.getPath());
 			List<WordInterval> words = WordDetection.detectWordsAutoSensitivity(file.getPath(),
 					Integer.parseInt(repeats));
-			success.put("intervals", words);
+			JSONArray array = new JSONArray();
+			for (WordInterval wordInterval : words) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("start", wordInterval.getStartTime());
+				jsonObject.put("stop", wordInterval.getStopTime());
+				array.add(jsonObject);
+			}
+			success.put("intervals", array);
+			try {
+				FileUtils.deleteDirectory(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return Response.status(200).entity(success.toJSONString()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
