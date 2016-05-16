@@ -115,7 +115,7 @@ public class Twilio {
 		TwiMLResponse twiml = new TwiMLResponse();
 		if (recordingUrl != null) {
 			try {
-				twiml.append(new Say("Thanks for using Knurld... take a listen to what you howled."));
+				twiml.append(new Say("Thanks for using Knurld.."));
 				// twiml.append(new Play(recordingUrl));
 				twiml.append(new Say("Goodbye"));
 			} catch (TwiMLException e) {
