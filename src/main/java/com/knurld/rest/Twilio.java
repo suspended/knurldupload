@@ -78,7 +78,7 @@ public class Twilio {
 			callSidMap.put(callId, digits);
 			Record record = new Record();
 			record.set("trim", "do-not-trim");
-			record.setMaxLength(15);
+			record.setMaxLength(30);
 			record.setFinishOnKey("#");
 			// You may need to change this to point to the location of your
 			// servlet
