@@ -1,6 +1,8 @@
 package com.knurld.rest;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.knurld.dropbox.api.UploadAPI;
 import com.knurld.vad.WordDetection;
 import com.knurld.vad.WordInterval;
 import com.twilio.sdk.verbs.Gather;
@@ -152,9 +155,21 @@ public class Twilio {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getKey(@PathParam("key") String key, @PathParam("repeats") String repeats) {
 		JSONObject success = new JSONObject();
-		success.put("url", urls.get(key));
+		String url = urls.get(key);
 		if (urls.get(key) != "") {
 			File file = downloadFile(urls.get(key));
+			String fileName = file.getName();
+			if (fileName == null || fileName.isEmpty()) {
+				fileName = UUID.randomUUID().toString() + ".wav";
+
+			}
+			try {
+				url = makeDownladableLink(UploadAPI.uploadFile(new FileInputStream(file), fileName));
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 			System.out.println("File path is :" + file.getPath());
 			List<WordInterval> words = WordDetection.detectWordsAutoSensitivity(file.getPath(),
 					Integer.parseInt(repeats));
@@ -173,9 +188,20 @@ public class Twilio {
 				e.printStackTrace();
 			}
 		}
+		success.put("url", url);
+
 		return Response.status(200).entity(success.toJSONString()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 
+	}
+
+	public static String makeDownladableLink(String str) {
+		if (str.charAt(str.length() - 1) == '0') {
+			str = str.substring(0, str.length() - 1) + "1";
+			return str;
+		} else {
+			return str;
+		}
 	}
 
 	@POST
