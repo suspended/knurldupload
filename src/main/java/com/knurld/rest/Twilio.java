@@ -167,7 +167,7 @@ public class Twilio {
 			}
 			success.put("intervals", array);
 			try {
-				FileUtils.deleteDirectory(file);
+				FileUtils.forceDelete(file);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
