@@ -1,6 +1,11 @@
 package com.knurld.rest;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -11,10 +16,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONObject;
 
+import com.knurld.vad.WordDetection;
+import com.knurld.vad.WordInterval;
 import com.twilio.sdk.verbs.Gather;
-import com.twilio.sdk.verbs.Play;
 import com.twilio.sdk.verbs.Record;
 import com.twilio.sdk.verbs.Say;
 import com.twilio.sdk.verbs.TwiMLException;
@@ -127,13 +134,31 @@ public class Twilio {
 
 	}
 
+	public static File downloadFile(String url) {
+		try {
+			File file = new File(UUID.randomUUID().toString() + ".wav");
+			FileUtils.copyURLToFile(new URL(url), file);
+			return file;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@GET
-	@Path("/getKey/{key}")
+	@Path("/getKey/{key}/{repeats}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getKey(@PathParam("key") String key) {
+	public Response getKey(@PathParam("key") String key, @PathParam("repeats") String repeats) {
 		JSONObject success = new JSONObject();
 		success.put("url", urls.get(key));
+		if (urls.get(key) != "") {
+			File file = downloadFile(urls.get(key));
+			System.out.println("File path is :" + file.getPath());
+			List<WordInterval> words = WordDetection.detectWordsAutoSensitivity(file.getPath(),
+					Integer.parseInt(repeats));
+			success.put("intervals", words);
+		}
 		return Response.status(200).entity(success.toJSONString()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 

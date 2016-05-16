@@ -1,3 +1,10 @@
+/Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/rest/Twilio.java
 /Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/dropbox/api/UploadAPI.java
+/Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/vad/WavFile.java
+/Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/vad/WordInterval.java
+/Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/vad/WordDetection.java
 /Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/rest/UploadFileService.java
+/Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/vad/Sensitivity.java
+/Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/vad/WavFileException.java
+/Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/vad/WordIntervalByStart.java
 /Users/ndarade/projects/knurld/RESTfulExample/src/main/java/com/knurld/dropbox/api/DBInstance.java
