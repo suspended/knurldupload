@@ -73,10 +73,11 @@ public class Twilio {
 
 		if (urls.containsKey(digits)) {
 			Say pleaseLeaveMessage = new Say(
-					"Record your monkey howl after the tone, After finish please hangup or presss hash or pound key");
+					"Record your voice as words on screen after the tone. After finish please hangup or presss hash or pound key");
 			// Record the caller's voice.
 			callSidMap.put(callId, digits);
 			Record record = new Record();
+			record.set("trim", "do-not-trim");
 			record.setMaxLength(15);
 			record.setFinishOnKey("#");
 			// You may need to change this to point to the location of your
@@ -115,7 +116,7 @@ public class Twilio {
 		if (recordingUrl != null) {
 			try {
 				twiml.append(new Say("Thanks for using Knurld... take a listen to what you howled."));
-				twiml.append(new Play(recordingUrl));
+				// twiml.append(new Play(recordingUrl));
 				twiml.append(new Say("Goodbye"));
 			} catch (TwiMLException e) {
 				e.printStackTrace();
@@ -143,7 +144,7 @@ public class Twilio {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response recordForKey(@PathParam("key") String key) {
 		System.out.println("Key:" + key);
-		if(urls.containsKey(key)){
+		if (urls.containsKey(key)) {
 			return Response.status(500).header("Access-Control-Allow-Origin", "*")
 					.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
 		}
