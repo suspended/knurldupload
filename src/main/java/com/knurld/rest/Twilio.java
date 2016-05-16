@@ -30,9 +30,12 @@ public class Twilio {
 	@POST
 	@Path("/incomingCall")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response incomingCall() {
+	public Response incomingCall(@FormParam("Caller") String caller) {
 		// Create a TwiML response and add our friendly message.
 		TwiMLResponse twiml = new TwiMLResponse();
+
+		System.out.println("Getting incoming call from :" + caller);
+
 		Say say = new Say("Hi There, you calling Knurld!");
 
 		// Play an MP3 for incoming callers.
@@ -60,18 +63,22 @@ public class Twilio {
 	@POST
 	@Path("/handlekey")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response handlekey(@FormParam("Digits") String digits, @FormParam("CallSid") String callId) {
+	public Response handlekey(@FormParam("Digits") String digits, @FormParam("CallSid") String callId,
+			@FormParam("Caller") String caller) {
 		TwiMLResponse twiml = new TwiMLResponse();
 		System.out.println("digits:" + digits);
 		System.out.println("Keys for urls:" + urls.keySet());
+
 		digits = digits.toString();
 
 		if (urls.containsKey(digits)) {
-			Say pleaseLeaveMessage = new Say("Record your monkey howl after the tone.");
+			Say pleaseLeaveMessage = new Say(
+					"Record your monkey howl after the tone, After finish please hangup or presss hash or pound key");
 			// Record the caller's voice.
 			callSidMap.put(callId, digits);
 			Record record = new Record();
-			record.setMaxLength(30);
+			record.setMaxLength(15);
+			record.setFinishOnKey("#");
 			// You may need to change this to point to the location of your
 			// servlet
 			record.setAction("https://knurldupload.herokuapp.com/rest/twilio/handleRecording");
@@ -82,6 +89,7 @@ public class Twilio {
 				e.printStackTrace();
 			}
 		} else {
+			System.out.println("Rejecting incoming call from :" + caller);
 			Say say = new Say("Please register as Knurld developer");
 			try {
 				// twiml.append(dial);
@@ -134,7 +142,11 @@ public class Twilio {
 	@Path("/recordForKey/{key}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response recordForKey(@PathParam("key") String key) {
-		System.out.println("Key:"+key);
+		System.out.println("Key:" + key);
+		if(urls.containsKey(key)){
+			return Response.status(500).header("Access-Control-Allow-Origin", "*")
+					.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
+		}
 		urls.put(key, "");
 		return Response.status(200).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
