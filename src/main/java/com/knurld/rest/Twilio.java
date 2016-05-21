@@ -128,7 +128,7 @@ public class Twilio {
 			try {
 				twiml.append(new Say("Thanks for using Knurld.."));
 				// twiml.append(new Play(recordingUrl));
-				twiml.append(new Say("Goodbye"));
+				twiml.append(new Say("Have a nice day!"));
 			} catch (TwiMLException e) {
 				e.printStackTrace();
 			}
