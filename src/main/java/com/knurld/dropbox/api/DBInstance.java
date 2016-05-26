@@ -15,7 +15,7 @@ public class DBInstance {
 	
 	
 	
-	private static final String ACCESS_TOKEN = "UmDUkC6dOAAAAAAAAAAAB300az5-WY4ps6P4plOZtoJ6ZEkHoenyqLEiZ-HjC2ph";
+	private static final String ACCESS_TOKEN = "tPhIfZyZtMAAAAAAAAAAB446RmDtNcuJMZMEykxJ2b_HK0dGGuJrAaNmuq7iInwn";
 	DbxRequestConfig config = new DbxRequestConfig("dropbox/java-tutorial", "en_US");
 
 	public DbxClientV2 getDbxClientV2() {
